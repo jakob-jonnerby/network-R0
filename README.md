@@ -4,7 +4,7 @@
 Infectious diseases can be modelled using the Susceptible-Infected-Recovered (SIR) model, where an individual belongs to either of the S, I, or R states. In a network model the population is assumed to consist of nodes which are connected to each other via edges (the number of edges connecting to a node is known as the degree of that node). At each timestep, an infected node can transmit the disease to any of its neighbours with probability `beta`, and recover from the disease with probability `gamma`. 
 
 ## The Basic Reproductive Number
-The basic reproductive number, known as `R0`, is defined as the expected number of secondary infections caused by one case in a population where everyone is susceptible to infection [1].
+The basic reproductive number, known as `R0`, is a dimensionless number defined as the expected number of secondary infections caused by one case in a population where everyone is susceptible to infection [1].
 
 Here we present an empirical method and code implementation in Python to calculate `R0` using an SIR model on any realistic network. The code was written in Python 3 and requires the installation of graph-tools [2].
 
