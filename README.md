@@ -14,7 +14,7 @@ Using the approach presented in [3], we want select one node in the network to s
 ## Algorithm
 ```
   PROGRAM Calculate R0:
-  Initialise: count = 0
+  count = 0
   Pick one node uniformly at random
   Pick one neighbour to this node uniformly at random and infect (= Patient zero)
       While Patient zero is infected do:
