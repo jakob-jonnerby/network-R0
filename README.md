@@ -12,19 +12,19 @@ Here we present an empirical method and code implementation in Python to calcula
 Using the approach presented in [3], we want select one node in the network to seed an infection. Early on in an epidemic, nodes with many connections have a higher probability of becoming infected. Therefore we preferentially choose nodes of high degree using the "friendship paradox", which states that the average degree of neighbouring nodes is higher than ones own degree [4]. We thus start by choosing one node uniformly at random in the network and then choose a connecting node at random to seed the infection. After initialising the epidemic, we count the number of infections caused by the initial case, while ignoring those caused by any of the secondary cases. By initialising and running the model many times, we can then get an estimate of the expected number of secondary infections, or R0.
 
 ## Algorithm
-0. Initialise: count = 0
-1. Pick one node uniformly at random
-2. Pick one neighbour to this node uniformly at random and infect (= Patient zero)
-4. While Patient zero is infected do:
-5.    For each node in the network do:
-6.        If node is infected do:
-7.            Recover with probability beta
-8.        If node is susceptible do:
-9.            For each neighbour to node do:
-10.               If neighbour is infected do:
-11.                   Infect node with probability beta
-12.                   If neighbour is patient zero:
-13.                     count = count+1
+0.    Initialise: count = 0
+1.    Pick one node uniformly at random
+2.    Pick one neighbour to this node uniformly at random and infect (= Patient zero)
+4.    While Patient zero is infected do:
+5.        For each node in the network do:
+6.            If node is infected do:
+7.                Recover with probability beta
+8.            If node is susceptible do:
+9.                For each neighbour to node do:
+10.                   If neighbour is infected do:
+11.                       Infect node with probability beta
+12.                       If neighbour is patient zero:
+13.                           count = count+1
 
 
 
