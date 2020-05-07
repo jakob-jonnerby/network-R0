@@ -3,6 +3,8 @@
 ## Modelling an Infectious Disease on a Network
 Infectious diseases can be modelled using the Susceptible-Infected-Recovered (SIR) model, where an individual belongs to either of the S, I, or R states. In a network model the population is assumed to consist of nodes which are connected to each other via edges (the number of edges connecting to a node is known as the degree of that node). At each timestep, an infected node can transmit the disease to any of its neighbours with probability beta, and recover from the disease with probability gamma. 
 
+`abs(log(x**2))`
+
 ## The Basic Reproductive Number
 The basic reproductive number, known as R0, is defined as the expected number of secondary infections caused by one case in a population where everyone is susceptible to infection [1].
 
@@ -13,18 +15,21 @@ Using the approach presented in [3], we want select one node in the network to s
 
 ## Algorithm
 Initialise: count = 0
+
 Pick one node uniformly at random
+
 Pick one neighbour to this node uniformly at random and infect (= Patient zero)
+
 For Patient zero is infected do
 For each node in the network do
-6.            If node is infected do:
-7.                Recover with probability beta
-8.            If node is susceptible do:
-9.                For each neighbour to node do:
-10.                   If neighbour is infected do:
-11.                       Infect node with probability beta
-12.                       If neighbour is patient zero:
-13.                           count = count+1
+If node is infected do:
+Recover with probability beta
+If node is susceptible do:
+For each neighbour to node do:
+If neighbour is infected do:
+Infect node with probability beta
+If neighbour is patient zero:
+count = count+1
 
 
 
