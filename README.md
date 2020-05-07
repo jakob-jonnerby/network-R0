@@ -6,7 +6,7 @@ Infectious diseases can be modelled using the Susceptible-Infected-Recovered (SI
 ## The Basic Reproductive Number
 The basic reproductive number, known as `R0`, is a dimensionless number defined as the expected number of secondary infections caused by one case in a population where everyone is susceptible to infection [1].
 
-Here we present an empirical method and code implementation in Python to calculate `R0` using an SIR model on any realistic network. The code was written in Python 3 and requires the installation of graph-tools [2].
+Here we present an empirical method and code implementation in Python to calculate `R0` using an SIR model on any realistic network. The code was written in Python 3 and requires the installation of `graph-tools` [2].
 
 ## Calculating R0 on a Network
 Using the approach presented in [3], we want select one node in the network to seed an infection. Early on in an epidemic, nodes with many connections have a higher probability of becoming infected. Therefore we preferentially choose nodes of high degree using the "friendship paradox", which states that the average degree of neighbouring nodes is higher than the degree of the node itself [4]. We thus start by choosing one node uniformly at random in the network and then choose a connecting node at random to seed the infection. After initialising the epidemic, we count the number of infections caused by the initial case, while ignoring those caused by any of the secondary cases. By initialising and running the model many times, we can then get an estimate of the expected number of secondary infections, or `R0`.
@@ -37,6 +37,9 @@ jakob.jonnerby@physics.ox.ac.uk
 
 Edwin Lock
 edwin.lock@merton.ox.ac.uk
+
+## Requirements
+graph-tools
 
 ## References
 
