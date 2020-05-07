@@ -33,8 +33,10 @@ Using the approach presented in [3], we want select one node in the network to s
 
 ## Authors
 Jakob Jonnerby
-Edwin Lock
+jakob.jonnerby@physics.ox.ac.uk
 
+Edwin Lock
+edwin.lock@merton.ox.ac.uk
 
 ## References
 
