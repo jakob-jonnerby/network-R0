@@ -17,8 +17,8 @@ Using the approach presented in [3], we want select one node in the network to s
   Initialise: count = 0
   Pick one node uniformly at random
   Pick one neighbour to this node uniformly at random and infect (= Patient zero)
-      While Patient zero is infected do
-  For each node in the network do
+      While Patient zero is infected do:
+          For each node in the network do:
   If node is infected do:
   Recover with probability beta
   If node is susceptible do:
@@ -30,9 +30,12 @@ Using the approach presented in [3], we want select one node in the network to s
   END
 ```
 
+## Authors
+Jakob Jonnerby
+Edwin Lock
 
 
-
+## References
 
 
 [1] https://en.wikipedia.org/wiki/Basic_reproduction_number
