@@ -21,15 +21,15 @@ By initialising and running the above procedure multiple times, we obtain an acc
   count = 0
   Pick one node uniformly at random
   Pick one neighbour to this node uniformly at random and infect (= Patient zero)
-  *While* Patient zero is infected do:
-      *For* each node in the network do:
-          *If* node is infected do:
+  While Patient zero is infected do:
+      For each node in the network do:
+          If node is infected do:
               Recover node with probability beta
-          *If* node is susceptible do:
-                *For* each neighbour to node do:
-                    *If* neighbour is infected do:
-                        *Infect* node with probability beta
-                            *If* neighbour is patient zero:
+          If node is susceptible do:
+                For each neighbour to node do:
+                    If neighbour is infected do:
+                        Infect node with probability beta
+                            If neighbour is patient zero:
                                 count = count+1
   R0 = count
   END
