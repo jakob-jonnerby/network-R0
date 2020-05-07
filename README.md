@@ -15,7 +15,7 @@ Using the approach presented in [3], we want select one node in the network to s
 0.    Initialise: count = 0
 1.    Pick one node uniformly at random
 2.    Pick one neighbour to this node uniformly at random and infect (= Patient zero)
-4.    While Patient zero is infected do
+4.    For Patient zero is infected do
 5.        For each node in the network do
 6.            If node is infected do:
 7.                Recover with probability beta
