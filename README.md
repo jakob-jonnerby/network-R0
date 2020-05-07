@@ -12,11 +12,12 @@ Here we present an empirical method and code implementation in Python to calcula
 Using the approach presented in [3], we want select one node in the network to seed an infection. Early on in an epidemic, nodes with many connections have a higher probability of becoming infected. Therefore we preferentially choose nodes of high degree using the "friendship paradox", which states that the average degree of neighbouring nodes is higher than ones own degree [4]. We thus start by choosing one node uniformly at random in the network and then choose a connecting node at random to seed the infection. After initialising the epidemic, we count the number of infections caused by the initial case, while ignoring those caused by any of the secondary cases. By initialising and running the model many times, we can then get an estimate of the expected number of secondary infections, or 'R0'.
 
 ## Algorithm
-'''
+```
+  PROGRAM Calculate R0:
   Initialise: count = 0
   Pick one node uniformly at random
   Pick one neighbour to this node uniformly at random and infect (= Patient zero)
-  For Patient zero is infected do
+      While Patient zero is infected do
   For each node in the network do
   If node is infected do:
   Recover with probability beta
@@ -26,36 +27,11 @@ Using the approach presented in [3], we want select one node in the network to s
   Infect node with probability beta
   If neighbour is patient zero:
   count = count+1
-'''
+  END
+```
 
-```
-PROGRAM MakePB&JSandwich:
-Grab a paper plate;
-Open bread container;
-Grab bread package;
-Untwist bread package;
-Open bread bag and remove two slices;
-Place slices on paper plate;
-Grab a plastic knife;
-Open peanut butter jar;
-Use knife to scoop out peanut butter;
-Apply peanut butter to one slice of bread;
-Spread peanut butter on slice;
-Place knife on plate;
-Close peanut butter jar;
-Open jelly bottle;
-Squeeze jelly onto second bread slice;
-Close jelly bottle;
-Place down jelly;
-Pick up knife;
-Spread jelly on slice;
-Bring two slices of bread together;
-Cut slices in half down the middle;
-Throw knife in the trash;
-Pick up one half of sandwich;
-Enjoy;
-END.  
-```
+
+
 
 
 
