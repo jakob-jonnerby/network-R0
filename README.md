@@ -3,7 +3,7 @@
 ## Modelling an Infectious Disease on a Network
 Infectious diseases can be modelled using the Susceptible-Infected-Recovered (SIR) model, where an individual belongs to either of the S, I, or R states. In a network model the population is assumed to consist of nodes which are connected to each other via edges. At each timestep, a node 
 
-<img src="https://latex.codecogs.com/gif.latex?\beta,&space;\gamma" title="\beta, \gamma" />
+<img src="https://latex.codecogs.com/svg.latex?\beta,&space;\gamma" title="\beta, \gamma" />
 
 ## The Basic Reproductive Number
 The basic reproductive number, known as R0, is defined as the expected number of secondary infections caused by one case in a population where everyone is susceptible to infection [1].
