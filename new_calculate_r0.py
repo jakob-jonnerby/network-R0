@@ -10,9 +10,9 @@ RECOVERED = 2
 
 print('Imported all libraries')
 
-def coinflip(p):
+def coinflips(p, n = None):
     """Return True with probability p and False otherwise."""
-    return np.random.random() < p
+    return np.random.random(n) < p
 
 def prune(g, patient_zero, t):
     """Remove all vertices in g that have distance >t from patient_zero."""
@@ -29,45 +29,67 @@ def unprune(g):
 
 def SIRmodel(g, patient_zero, beta, gamma):
     """
-    Runs a standard SIR model on graph g with one infected individual, 
-    patient_zero.
+    Runs a standard SIR model on graph g with parameters 'beta' and 'gamma' and 
+    one infected individual, patient_zero. Uses graph-tool SIRState model to
+    speed up computation.
     
-    g - graph
+    g - graph-tool graph object
     patient_zero - index of patient zero
     beta - infection probability of edge
     gamma - recovery probability
     """
     zero_neighbours = g.get_out_neighbours(patient_zero)
-    # Initialise states
+    # Initialise infection states
     state = g.new_vertex_property('double', 0)
     state.a[patient_zero] = RECOVERED  # this is a technicality, not a typo
+    # Determine time that patient_zero is infected
     infection_time = np.random.geometric(gamma)  # TODO: is this correct?
-    prune(g, patient_zero, infection_time // 2)  # prune the graph
+    prune(g, patient_zero, 1 + infection_time // 2)  # prune the graph
     # Run a standard SIR model for as long as patient_zero is infected and
     # increment R0 value each time patient_zero directly infects another person 
     R0 = 0
     for _ in range(infection_time):
-        # Process all primary infections by patient zero
+        """ The following doesn't seem to speed up the function in practice.
+        """
+        # Terminate if patient zero has no susceptible neighbours
+        if (state.a[zero_neighbours] > 0).all():
+            print('early termination')
+            break
+
+        # Execute all possible primary infections by patient zero
+
+        """ Alternative numpy code to replace the for loop below. May not be
+        worth it, as it's less readable and doesn't seem to bring huge speed
+        benefits!
+        
+        newly_infected = np.logical_and(state.a[zero_neighbours]==SUSCEPTIBLE,
+                                        coinflips(beta, zero_neighbours.size),
+                                        dtype='bool')
+        # newly_infected is a boolean mask,
+        # zero_neighbours is a list of indices
+        state.a[zero_neighbours][newly_infected] = INFECTED
+        R0 += newly_infected.sum()
+        """
+        
         for neighbour in zero_neighbours:
-            if state.a[neighbour] == SUSCEPTIBLE and coinflip(beta):
+            if state.a[neighbour] == SUSCEPTIBLE and coinflips(beta):
                 state.a[neighbour] = INFECTED  # patient_zero infects neighbour
                 R0 += 1  # increment counter
-        # Process all other infections using graph-tool model
+        # Execute all other infections using graph-tool model
         model = SIRState(g, beta, gamma, s=state)
         model.iterate_sync()
         state = model.get_state()
     unprune(g)
-    print(R0)
     return R0
 
 def calculate_R0(g, beta, gamma, trials):
+    """Calculate and return an array of length 'trials' with R0 values."""
     vxs = g.get_vertices()
     results = np.zeros(trials)
     for i in range(trials):
         print(f'trial {i}')
         # Pick one person uniformly at random
         person = np.random.choice(vxs, 1, replace=False)
-<<<<<<< HEAD
         neighbours = g.get_out_neighbours(person)
         if neighbours.size == 0:  # trivial edge case
             results[i] = 0
@@ -76,28 +98,6 @@ def calculate_R0(g, beta, gamma, trials):
             patient_zero = np.random.choice(neighbours)
             # Initialise model with correct state
             results[i] = SIRmodel(g, patient_zero, beta, gamma)
-=======
-        neighbours = g.get_out_neighbors(person)
-        if neighbours.size == 0: return R0  # trivial edge case
-        # Pick one neighbour at random to be patient_zero
-        patient_zero = np.random.choice(neighbours)
-
-        # Initialise model with correct state
-        new_vxs = state.copy(value_type='bool')
-        infect_vertex_property(g, new_vxs, vals=[True])
-        g.set_vertex_filter(new_vxs)
-        results[i] = SIRmodel(g, patient_zero, beta, gamma)
-        
-        """
-        I don't think we want to do this? The result would only be an 
-        approximation!
-
-        # # Remove all  nodes that are not neighbours to patient zero
-        # new_vxs = state.copy(value_type='bool')
-        # infect_vertex_property(g, new_vxs, vals=[True])
-        # g.set_vertex_filter(new_vxs)
-        """
->>>>>>> c267465eacc498e1734de446911bc24d2fca4503
     return results
 
 
@@ -107,8 +107,8 @@ if __name__ == "__main__":
     # RANDOM GEOMETRIC NETWORK
     # points = np.random.random((n, 2)) * 5
     # g, pos = geometric_graph(points, 0.05, [(0, 4), (0, 4)])
-    beta = 0.5  # 0.01
-    gamma = 0.1  # 0.0476
+    beta = 0.01
+    gamma = 0.0476
     trials = 100
     R0_results = calculate_R0(g, beta, gamma, trials)
     
@@ -118,4 +118,4 @@ if __name__ == "__main__":
     plt.title('mean(R0) = '+str(np.mean(R0_results))+', std(R0) ='+str(round(np.std(R0_results)*100)/100))
     plt.xlabel('R0')
     plt.ylabel('Frequency')
-    plt.show()
+    plt.show(block=False)
