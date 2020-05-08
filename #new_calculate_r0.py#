@@ -21,12 +21,17 @@ def SIRmodel(g, patient_zero, beta, gamma):
     g - graph
     state - numpy array
     """
+    new_vxs = state.copy(value_type='bool')
+    infect_vertex_property(g, new_vxs, vals=[True])
+    g.set_vertex_filter(new_vxs)
     n = g.num_vertices()
     population = g.get_vertices()  # numpy array of all vertices in g
     # Initialise states
     state = np.full(n, SUSCEPTIBLE)
     state[patient_zero] = INFECTED
     R0 = 0
+    
+    
     # Run a standard SIR model for as long as patient_zero is infected and
     # increment R0 value each time patient_zero directly infects another person 
     while state[patient_zero] == INFECTED:
@@ -60,9 +65,6 @@ def calculate_R0(g, beta, gamma, trials):
         patient_zero = np.random.choice(neighbours)
 
         # Initialise model with correct state
-        new_vxs = state.copy(value_type='bool')
-        infect_vertex_property(g, new_vxs, vals=[True])
-        g.set_vertex_filter(new_vxs)
         results[i] = SIRmodel(g, patient_zero, beta, gamma)
         
         """

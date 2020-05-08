@@ -60,15 +60,16 @@ def calculate_R0(g, beta, gamma, trials):
         patient_zero = np.random.choice(neighbours)
 
         # Initialise model with correct state
-        new_vxs = state.copy(value_type='bool')
-        infect_vertex_property(g, new_vxs, vals=[True])
-        g.set_vertex_filter(new_vxs)
+
         results[i] = SIRmodel(g, patient_zero, beta, gamma)
         
         """
         I don't think we want to do this? The result would only be an 
         approximation!
 
+        new_vxs = state.copy(value_type='bool')
+        infect_vertex_property(g, new_vxs, vals=[True])
+        g.set_vertex_filter(new_vxs)
         # # Remove all  nodes that are not neighbours to patient zero
         # new_vxs = state.copy(value_type='bool')
         # infect_vertex_property(g, new_vxs, vals=[True])
