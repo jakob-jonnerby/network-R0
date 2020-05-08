@@ -111,7 +111,6 @@ if __name__ == "__main__":
     gamma = 0.0476
     trials = 100
     R0_results = calculate_R0(g, beta, gamma, trials)
-    
     print(np.mean(R0_results))
     print(np.std(R0_results))
     plt.hist(R0_results, bins=np.linspace(0, 20, round(trials/10)))
