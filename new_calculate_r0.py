@@ -67,7 +67,6 @@ def calculate_R0(g, beta, gamma, trials):
         print(f'trial {i}')
         # Pick one person uniformly at random
         person = np.random.choice(vxs, 1, replace=False)
-<<<<<<< HEAD
         neighbours = g.get_out_neighbours(person)
         if neighbours.size == 0:  # trivial edge case
             results[i] = 0
@@ -76,28 +75,7 @@ def calculate_R0(g, beta, gamma, trials):
             patient_zero = np.random.choice(neighbours)
             # Initialise model with correct state
             results[i] = SIRmodel(g, patient_zero, beta, gamma)
-=======
-        neighbours = g.get_out_neighbors(person)
-        if neighbours.size == 0: return R0  # trivial edge case
-        # Pick one neighbour at random to be patient_zero
-        patient_zero = np.random.choice(neighbours)
 
-        # Initialise model with correct state
-        new_vxs = state.copy(value_type='bool')
-        infect_vertex_property(g, new_vxs, vals=[True])
-        g.set_vertex_filter(new_vxs)
-        results[i] = SIRmodel(g, patient_zero, beta, gamma)
-        
-        """
-        I don't think we want to do this? The result would only be an 
-        approximation!
-
-        # # Remove all  nodes that are not neighbours to patient zero
-        # new_vxs = state.copy(value_type='bool')
-        # infect_vertex_property(g, new_vxs, vals=[True])
-        # g.set_vertex_filter(new_vxs)
-        """
->>>>>>> c267465eacc498e1734de446911bc24d2fca4503
     return results
 
 
@@ -107,8 +85,8 @@ if __name__ == "__main__":
     # RANDOM GEOMETRIC NETWORK
     # points = np.random.random((n, 2)) * 5
     # g, pos = geometric_graph(points, 0.05, [(0, 4), (0, 4)])
-    beta = 0.5  # 0.01
-    gamma = 0.1  # 0.0476
+    beta = 0.01  # 0.01
+    gamma = 0.0476  # 0.0476
     trials = 100
     R0_results = calculate_R0(g, beta, gamma, trials)
     

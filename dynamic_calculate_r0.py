@@ -9,9 +9,11 @@ RECOVERED = 2
 
 print('Imported all libraries')
 
+
 def coinflip(p):
     """Return True with probability p and False otherwise."""
     return np.random.random() < p
+
 
 def SIRmodel(g, patient_zero, beta, gamma):
     """
@@ -21,12 +23,7 @@ def SIRmodel(g, patient_zero, beta, gamma):
     g - graph
     state - numpy array
     """
-    # g2 = g.copy()
-    # n = g2.num_vertices()
-
     # Initialise states
-    # state = np.full(n, SUSCEPTIBLE)
-    # state[patient_zero] = INFECTED
     state = g.new_vertex_property('int32_t', False)
     state.a[patient_zero] = INFECTED
 
@@ -34,7 +31,7 @@ def SIRmodel(g, patient_zero, beta, gamma):
     # Run a standard SIR model for as long as patient_zero is infected and
     # increment R0 value each time patient_zero directly infects another person 
     while state[patient_zero] == INFECTED:
-        # Active population
+        # Active population with an infected neighbour
         g2 = g.copy()
         active = g2.new_vertex_property('bool', False)
         active.a[np.nonzero(state.a)] = True
@@ -43,7 +40,8 @@ def SIRmodel(g, patient_zero, beta, gamma):
 
         # numpy array of all vertices in g
         population = g2.get_vertices()
-        np.random.shuffle(population)  # why do we shuffle here?
+        np.random.shuffle(population)
+
         # Iterate through all individuals in population
         for person in population:
             # Heal each infected person with probability gamma
@@ -57,7 +55,8 @@ def SIRmodel(g, patient_zero, beta, gamma):
                         state[person] = INFECTED
                         if neighbour == patient_zero:
                             R0 += 1
-                        break  # do we really want a break here?
+                        break
+
     return R0
 
 
@@ -93,10 +92,10 @@ def calculate_R0(g, beta, gamma, trials):
 
 if __name__ == "__main__":
     n = 10**5  # Population size
-    g = price_network(n, directed=False, m=2)
+    # g = price_network(n, directed=False, m=2)
     # RANDOM GEOMETRIC NETWORK
-    # points = np.random.random((n, 2)) * 5
-    # g, pos = geometric_graph(points, 0.05, [(0, 4), (0, 4)])
+    points = np.random.random((n, 2)) * 5
+    g, pos = geometric_graph(points, 0.05, [(0, 4), (0, 4)])
     beta = 0.01
     gamma = 0.0476
     trials = 100
