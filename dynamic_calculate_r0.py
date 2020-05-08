@@ -17,26 +17,40 @@ def SIRmodel(g, patient_zero, beta, gamma):
     """
     Runs a standard SIR model on graph g with one infected individual, 
     patient_zero.
-    
+
     g - graph
     state - numpy array
     """
-    n = g.num_vertices()
-    population = g.get_vertices()  # numpy array of all vertices in g
+    # g2 = g.copy()
+    # n = g2.num_vertices()
+
     # Initialise states
-    state = np.full(n, SUSCEPTIBLE)
-    state[patient_zero] = INFECTED
+    # state = np.full(n, SUSCEPTIBLE)
+    # state[patient_zero] = INFECTED
+    state = g.new_vertex_property('int32_t', False)
+    state.a[patient_zero] = INFECTED
+
     R0 = 0
     # Run a standard SIR model for as long as patient_zero is infected and
     # increment R0 value each time patient_zero directly infects another person 
     while state[patient_zero] == INFECTED:
-        # np.random.shuffle(population)  # why do we shuffle here?
+        # Active population
+        g2 = g.copy()
+        active = g2.new_vertex_property('bool', False)
+        active.a[np.nonzero(state.a)] = True
+        infect_vertex_property(g2, active, vals=[True])
+        g2.set_vertex_filter(active)
+
+        # numpy array of all vertices in g
+        population = g2.get_vertices()
+        np.random.shuffle(population)  # why do we shuffle here?
         # Iterate through all individuals in population
         for person in population:
             # Heal each infected person with probability gamma
             if state[person] == INFECTED and coinflip(gamma):
                 state[person] = RECOVERED
-                if person == patient_zero: return R0  # we can stop
+                if person == patient_zero:
+                    return R0  # we can stop
             if state[person] == SUSCEPTIBLE:
                 for neighbour in g.get_out_neighbors(person):
                     if state[neighbour] == INFECTED and coinflip(beta):
@@ -45,6 +59,7 @@ def SIRmodel(g, patient_zero, beta, gamma):
                             R0 += 1
                         break  # do we really want a break here?
     return R0
+
 
 def calculate_R0(g, beta, gamma, trials):
     vxs = g.get_vertices()
@@ -55,21 +70,19 @@ def calculate_R0(g, beta, gamma, trials):
         # Pick one person uniformly at random
         person = np.random.choice(vxs, 1, replace=False)
         neighbours = g.get_out_neighbors(person)
-        if neighbours.size == 0: return R0  # trivial edge case
-        # Pick one neighbour at random to be patient_zero
-        patient_zero = np.random.choice(neighbours)
+        if neighbours.size == 0:
+            results[i] = 0  # trivial edge case
+        else:
+            # Pick one neighbour at random to be patient_zero
+            patient_zero = np.random.choice(neighbours)
 
-        # Initialise model with correct state
-
-        results[i] = SIRmodel(g, patient_zero, beta, gamma)
+            # Initialise model with correct state
+            results[i] = SIRmodel(g, patient_zero, beta, gamma)
         
         """
         I don't think we want to do this? The result would only be an 
         approximation!
 
-        new_vxs = state.copy(value_type='bool')
-        infect_vertex_property(g, new_vxs, vals=[True])
-        g.set_vertex_filter(new_vxs)
         # # Remove all  nodes that are not neighbours to patient zero
         # new_vxs = state.copy(value_type='bool')
         # infect_vertex_property(g, new_vxs, vals=[True])
@@ -79,7 +92,7 @@ def calculate_R0(g, beta, gamma, trials):
 
 
 if __name__ == "__main__":
-    n = 10**4  # Population size
+    n = 10**5  # Population size
     g = price_network(n, directed=False, m=2)
     # RANDOM GEOMETRIC NETWORK
     # points = np.random.random((n, 2)) * 5
